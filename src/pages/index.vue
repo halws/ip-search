@@ -6,43 +6,40 @@ defineOptions({
 
 <template>
   <div>
-    <div class="w-96 border rounded-lg bg-white p-4 shadow-lg">
+    <div class="w-2xl border rounded-sm bg-white pb-4 shadow-lg">
       <!-- Header -->
-      <div class="mb-4 flex items-center justify-between border-b pb-2">
-        <h1 class="text-lg font-bold">
+      <div class="mb-4 flex items-center justify-between border-b px-4 py-1">
+        <h1 class="text-lg font-extrabold">
           IP Lookup
         </h1>
-        <button class="text-xl">
+        <button class="text-4xl">
           &times;
         </button>
       </div>
 
-      <!-- Description -->
-      <p class="mb-4">
-        Enter one or more IP addresses and get their country
-      </p>
-
-      <!-- Add Button -->
-      <div class="mb-4">
-        <button
-          class="flex items-center rounded-lg bg-blue-500 px-4 py-2 text-white"
-        >
-          <span class="mr-2 text-xl">+</span> Add
-        </button>
-      </div>
-
-      <!-- Input Fields -->
-      <div class="mb-2 flex items-center border rounded-lg p-2">
-        <div
-          class="mr-2 h-6 w-6 flex items-center justify-center rounded-full bg-gray-200 text-gray-700"
-        >
-          1
+      <!-- Content -->
+      <div class="px-4 text-left">
+        <!-- Description -->
+        <p class="mb-4">
+          Enter one or more IP addresses and get their country
+        </p>
+        <!-- Add Button -->
+        <div class="mb-4">
+          <button class="text-sm btn">
+            <span class="mr-2 text-xl">+</span> Add
+          </button>
         </div>
-        <input
-          type="text"
-          class="flex-grow border-none focus:outline-none"
-          placeholder="Enter IP address"
-        >
+
+        <!-- Divider -->
+        <hr class="my-4 h-px border-0 bg-gray-200 dark:bg-gray-700">
+
+        <!-- Input Fields -->
+        <div class="mb-2 flex items-center p-2">
+          <div class="mr-2 h-10 w-10 flex items-center justify-center rounded-full bg-gray-200 text-gray-700">
+            1
+          </div>
+          <input type="text" class="flex-grow border rounded-sm p-2 focus:outline-none" placeholder="Enter IP address">
+        </div>
       </div>
     </div>
     <!-- <div i-carbon-campsite inline-block text-4xl />
@@ -75,3 +72,5 @@ defineOptions({
     </div> -->
   </div>
 </template>
+
+<style></style>
