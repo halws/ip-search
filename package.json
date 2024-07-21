@@ -13,11 +13,14 @@
     "postinstall": "npx simple-git-hooks"
   },
   "dependencies": {
+    "@vee-validate/zod": "^4.13.2",
     "@vueuse/core": "^10.9.0",
     "@vueuse/integrations": "^10.11.0",
     "axios": "^1.7.2",
+    "vee-validate": "^4.13.2",
     "vue": "^3.4.27",
-    "vue-router": "^4.3.2"
+    "vue-router": "^4.3.2",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^2.18.1",
