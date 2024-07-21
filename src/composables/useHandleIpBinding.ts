@@ -33,17 +33,18 @@ function useHandleIpBinding(): {
   )
 
   async function handleIpBinding(rawIpString: string) {
+    // Skip if the form is invalid
     if (!isFormValid.value)
       return
+
     try {
       toggleBindingLoadingState()
       // Update the current loading IP to show the user which IP is being loaded
       lastSeekedIp.value = rawIpString.trim()
 
-      // Skip if the form is invalid
+      // cache: Skip if the IP address is already in the map
 
-      // Skip if the IP address is already in the map
-      if (ipAddresses.value.has(rawIpString))
+      if (ipAddresses.value.has(rawIpString.trim()))
         return
 
       // Fetch the batch IP information
@@ -69,5 +70,6 @@ function useHandleIpBinding(): {
 
   return { handleIpBinding, isPerformingBinding, lastSeekedIp, ipAddresses }
 }
-
-export { useHandleIpBinding }
+// to omit global state we can use shared composable
+const sharedComposable = createSharedComposable(useHandleIpBinding)
+export { sharedComposable as useHandleIpBinding }
