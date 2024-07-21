@@ -30,7 +30,9 @@ const { push, fields } = useFieldArray<string>('ips')
 
 <template>
   <div>
-    <div class="w-2xl border rounded-sm bg-white pb-4 shadow-lg">
+    <div
+      class="w-2xl border rounded-sm bg-white pb-4 shadow-lg dark:bg-gray-800"
+    >
       <!-- Header -->
       <div class="mb-4 flex items-center justify-between border-b px-4 py-1">
         <h1 class="text-lg font-extrabold">

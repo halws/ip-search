@@ -5,9 +5,10 @@
     </button>
 
     <a
-      i-carbon-logo-github icon-btn
+      i-carbon-logo-github
+      icon-btn
       rel="noreferrer"
-      href="https://github.com/antfu/vitesse-lite"
+      href="https://github.com/halws/ip-search"
       target="_blank"
       title="GitHub"
     />

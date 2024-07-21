@@ -8,8 +8,14 @@ import {
 
 export default defineConfig({
   shortcuts: [
-    ['btn', 'px-6 py-1 flex items-center rounded inline-block bg-cornflower-300 text-white cursor-pointer hover:bg-cornflower-700 disabled:cursor-default disabled:bg-gray-600 disabled:opacity-50'],
-    ['icon-btn', 'text-[0.9em] inline-block cursor-pointer select-none opacity-75 transition duration-200 ease-in-out hover:opacity-100 hover:text-cornflower-600 !outline-none'],
+    [
+      'btn',
+      'px-6 py-1 flex items-center rounded inline-block bg-cornflower-300 text-white cursor-pointer hover:bg-cornflower-700 disabled:cursor-default disabled:bg-gray-600 disabled:opacity-50 dark:hover:bg-cornflower-500 dark:bg-cornflower-500 dark:text-white dark:disabled:bg-gray-700 dark:disabled:opacity-50 dark:hover:bg-cornflower-700',
+    ],
+    [
+      'icon-btn',
+      'text-[0.9em] inline-block cursor-pointer select-none opacity-75 transition duration-200 ease-in-out hover:opacity-100 hover:text-cornflower-600 !outline-none',
+    ],
   ],
   theme: {
     colors: {
