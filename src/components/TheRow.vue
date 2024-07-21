@@ -66,11 +66,14 @@ watchEffect((onCleanup) => {
       </div>
     </div>
 
-    <div v-if="isPerformingBinding && lastSeekedIp === trimmedIp">
+    <div
+      v-if="isPerformingBinding && lastSeekedIp === trimmedIp"
+      class="w-30% flex items-center"
+    >
       ...loading
     </div>
 
-    <div class="flex-grow">
+    <div class="flex flex-grow flex-col justify-center">
       <div
         v-for="(item, timeIdx) in ipData || []"
         :key="item.countryCode"
