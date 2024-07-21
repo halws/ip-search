@@ -2,12 +2,14 @@
 import { useAxios } from '@vueuse/integrations/useAxios'
 import { toTypedSchema } from '@vee-validate/zod'
 import * as zod from 'zod'
-import { ErrorMessage, Field, FieldArray } from 'vee-validate'
+import { ErrorMessage, Field } from 'vee-validate'
 
 defineOptions({
   name: 'IndexPage',
 })
-
+function delay(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
 const url = 'http://ip-api.com/batch'
 interface IpApiResponse {
   status: string
@@ -26,30 +28,7 @@ interface IpApiResponse {
   query: string
 }
 
-// const ipAddresses = reactive([
-//   { raw: '', results: ref<IpApiResponse[] | undefined>(undefined) },
-// ]);
-
-const { execute } = useAxios<IpApiResponse[]>(
-  url,
-  { method: 'POST' },
-  { immediate: false },
-)
-// execute({ params: { key: 1 } });
-// execute({ params: { key: 2 } });
-
-// execute()
-// async function getIpInfo(ip: string, index: number) {
-//   try {
-//     const result = await execute({
-//       data: joinIPs(ip),
-//     });
-
-//     ipAddresses[index].results = result.data.value;
-//   } catch (err) {
-//     console.error('err: ', err);
-//   }
-// }
+const ipAddresses = ref(new Map<string, IpApiResponse[]>())
 
 const ipStringSchema = zod.string().refine(
   (value) => {
@@ -81,10 +60,63 @@ useForm({
   initialValues: {
     ips: [''],
   },
-  validateOnMount: false,
 })
 
-const { remove: _, push } = useFieldArray<string>('ips')
+const { remove: _, push, fields } = useFieldArray<string>('ips')
+
+const { execute: performIpSeeking } = useAxios<IpApiResponse[]>(
+  url,
+  { method: 'POST' },
+  { immediate: false },
+)
+
+function joinIPs(rawIPs: string) {
+  return rawIPs
+    .replace(/ /g, '')
+    .split(',')
+    .map(ip => ip.replace(/ /g, ''))
+}
+
+const isFormValid = useIsFormValid()
+
+const lastSeekedIp = ref('')
+
+const [isPerformingBinding, toggleBindingLoadingState] = useToggle()
+
+async function handleIpBinding(rawIpString: string) {
+  try {
+    toggleBindingLoadingState()
+    // Update the current loading IP to show the user which IP is being loaded
+    lastSeekedIp.value = rawIpString.trim()
+
+    // Skip if the form is invalid
+    if (!isFormValid)
+      return
+
+    // Skip if the IP address is already in the map
+    if (ipAddresses.value.has(rawIpString))
+      return
+
+    // Fetch the batch IP information
+    const result = await performIpSeeking({
+      data: joinIPs(rawIpString),
+    })
+
+    // Delay for 1 second to simulate a real-world scenario
+    await delay(1000)
+
+    // Update the map with the IP address and its result
+    if (result?.data.value)
+      ipAddresses.value.set(rawIpString, result.data.value)
+      // TODO remove unused IPs
+  }
+  catch (err) {
+    console.error(err)
+  }
+  finally {
+    toggleBindingLoadingState()
+  }
+}
 </script>
 
 <template>
@@ -95,7 +127,7 @@ const { remove: _, push } = useFieldArray<string>('ips')
         <h1 class="text-lg font-extrabold">
           IP Lookup
         </h1>
-        <button class="text-4xl" @click="execute({})">
+        <button class="text-4xl" @click="null">
           &times;
         </button>
       </div>
@@ -117,32 +149,40 @@ const { remove: _, push } = useFieldArray<string>('ips')
         <hr class="my-4 h-px border-0 bg-gray-200 dark:bg-gray-700">
 
         <!-- Input Fields -->
-        <FieldArray v-slot="{ fields }" name="ips">
-          <fieldset v-for="(_, i) in fields" :key="i" class="mb-2 p-2">
-            <div flex>
-              <label
-                class="mr-2 h-10 w-10 flex items-center justify-center rounded-full bg-gray-200 text-gray-700"
-                :for="`ip-${i}`"
-              >
-                {{ i + 1 }}
-              </label>
-              <div class="w-full">
-                <Field
-                  :name="`ips[${i}]`"
-                  as="input"
-                  type="text"
-                  class="w-70% flex-grow border rounded-sm p-2 focus:outline-none"
-                  placeholder="Enter IP address"
-                />
+        <fieldset v-for="(item, i) in fields" :key="i" class="mb-2 p-2">
+          <div flex>
+            <label
+              class="mr-2 h-10 w-10 flex items-center justify-center rounded-full bg-gray-200 text-gray-700"
+              :for="`ip-${i}`"
+            >
+              {{ i + 1 }}
+            </label>
+            <div class="w-full">
+              <Field
+                :name="`ips[${i}]`"
+                as="input"
+                type="text"
+                class="w-70% flex-grow border rounded-sm p-2 disabled:bg-gray-100 focus:outline-none"
+                placeholder="Enter IP address"
+                :disabled="isPerformingBinding"
+                @blur="handleIpBinding($event.target.value)"
+              />
 
-                <ErrorMessage
-                  :name="`ips[${i}]`"
-                  class="block text-sm text-red-500"
-                />
-              </div>
+              <ErrorMessage
+                :name="`ips[${i}]`"
+                class="block text-sm text-red-500"
+              />
             </div>
-          </fieldset>
-        </FieldArray>
+
+            <div
+              v-if="isPerformingBinding && lastSeekedIp === item.value.trim()"
+            >
+              ...loading
+            </div>
+
+            <!-- {{ ipAddresses.get(item.value) }} -->
+          </div>
+        </fieldset>
       </div>
     </div>
   </div>
