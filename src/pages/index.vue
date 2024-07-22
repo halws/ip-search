@@ -26,13 +26,23 @@ export interface IpApiResponse {
 useGetForm()
 
 const { push, fields } = useFieldArray<string>('ips')
+
+const timeNow = ref(new Date())
+
+onMounted(() => {
+  const timer = setInterval(() => {
+    timeNow.value = new Date()
+  }, 1000)
+
+  onBeforeUnmount(() => {
+    clearInterval(timer)
+  })
+})
 </script>
 
 <template>
   <div>
-    <div
-      class="w-2xl border rounded-sm bg-white pb-4 shadow-lg dark:bg-gray-800"
-    >
+    <div class="w-2xl border rounded-sm bg-white pb-4 shadow-lg dark:bg-gray-800">
       <!-- Header -->
       <div class="mb-4 flex items-center justify-between border-b px-4 py-1">
         <h1 class="text-lg font-extrabold">
@@ -60,7 +70,7 @@ const { push, fields } = useFieldArray<string>('ips')
         <hr class="my-4 h-px border-0 bg-gray-200 dark:bg-gray-700">
 
         <!-- Input Fields -->
-        <TheRow v-for="(_, i) in fields" :key="i" :index="i" />
+        <TheRow v-for="(_, i) in fields" :key="i" :index="i" :now="timeNow" />
       </div>
     </div>
   </div>

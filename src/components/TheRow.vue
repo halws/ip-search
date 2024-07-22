@@ -2,8 +2,9 @@
 import { ErrorMessage, Field, useFieldValue } from 'vee-validate'
 import { useHandleIpBinding } from '~/composables/useHandleIpBinding'
 
-const { index } = defineProps<{
+const { index, now } = defineProps<{
   index: number
+  now: Date
 }>()
 
 const { handleIpBinding, isPerformingBinding, lastSeekedIp, ipAddresses }
@@ -15,26 +16,18 @@ const trimmedIp = computed(() => item.value.trim())
 
 const ipData = computed(() => ipAddresses.value.get(trimmedIp.value))
 
-const time = ref<string[]>([])
-const now = useNow()
-watchEffect((onCleanup) => {
-  const timer = setInterval(() => {
-    if (!ipData.value)
-      return
+const time = computed(() => {
+  if (!ipData.value)
+    return []
 
-    time.value = ipData.value.map((item) => {
-      return now.value.toLocaleTimeString('en-US', {
-        timeZone: item.timezone,
-        hour12: false, // Use 24-hour format
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-      })
+  return ipData.value.map((item) => {
+    return now.toLocaleTimeString('en-US', {
+      timeZone: item.timezone,
+      hour12: false, // Use 24-hour format
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
     })
-  }, 1000)
-
-  onCleanup(() => {
-    clearInterval(timer)
   })
 })
 </script>
