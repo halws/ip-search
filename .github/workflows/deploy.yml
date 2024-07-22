@@ -14,6 +14,7 @@ jobs:
     permissions:
       id-token: write
       contents: write
+      pages: write
 
     steps:
       - uses: actions/checkout@v4
@@ -29,14 +30,17 @@ jobs:
           node-version: '18.12'
           cache: pnpm
 
+      - name: Clean build directory
+        run: rm -rf ./dist
+
       - name: Install dependencies
         run: pnpm install
 
       - name: Build Vue.js app
         run: pnpm build
 
-      - name: Deploy GitHub Pages site
-        uses: actions/deploy-pages@v4.0.5
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4.6.3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          artifact_name: github-pages
+          folder: dist # The folder the action should deploy.
+            
