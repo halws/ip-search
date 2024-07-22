@@ -11,20 +11,23 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    permissions:
+      id-token: write
+      contents: write
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16'
-          cache: pnpm
-
-      - name: Set up pnpm
+      - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 9.1.1
+          version: 9.6.0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.12'
+          cache: pnpm
 
       - name: Install dependencies
         run: pnpm install
